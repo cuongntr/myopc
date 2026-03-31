@@ -1,3 +1,5 @@
+[![Release](https://github.com/cuongntr/myopc/actions/workflows/release.yml/badge.svg)](https://github.com/cuongntr/myopc/actions/workflows/release.yml)
+
 # myopc
 
 `myopc` is a standalone npm CLI that installs a Beads-oriented OpenCode workflow with one command.
