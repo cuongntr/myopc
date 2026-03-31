@@ -27,13 +27,15 @@ You are creating a dependency-aware implementation plan. The output will be conv
 
 ## Rules
 
-1. Produce 5–15 tasks. Split further only if a task would take >2 hours.
-2. Each task title starts with a verb: "Create", "Implement", "Add", "Fix", "Write", "Update", "Configure".
-3. Express ordering via `depends_on`. The graph must be a DAG — no cycles.
-4. Foundation work (schema, config, types) has no dependencies. Higher layers depend on foundations.
-5. Testing is required. Include it in the implementation task unless test work is substantial — then make it a separate task that depends on the implementation.
-6. The `description` field must be detailed enough that a developer (or AI agent) can start coding without asking questions. Include file paths, function signatures, libraries, and patterns to follow when known.
-7. If requirements are ambiguous, state assumptions and proceed conservatively.
+1. Before producing tasks, list your assumptions and name the modules or layers affected. If the request is ambiguous, resolve each ambiguity conservatively and state how.
+2. Produce 5–15 tasks. Split further only if a task would take >2 hours.
+3. Each task title starts with a verb: "Create", "Implement", "Add", "Fix", "Write", "Update", "Configure".
+4. Express ordering via `depends_on`. The graph must be a DAG — no cycles.
+5. Foundation work (schema, config, types) has no dependencies. Higher layers depend on foundations.
+6. Testing is required. Include it in the implementation task unless test work is substantial — then make it a separate task that depends on the implementation.
+7. The `description` field must be detailed enough that a developer (or AI agent) can start coding without asking questions. Include file paths, function signatures, libraries, and patterns to follow when known.
+8. No prohibited vagueness in any field: do not write `TODO`, `TBD`, `as needed`, `appropriate`, `suitable`, `the relevant files`, or `etc.` — use concrete names, paths, and values instead.
+9. Every `done` criterion must be verifiable by a specific command, assertion, or observable outcome.
 
 ## Output
 
