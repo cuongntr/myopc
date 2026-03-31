@@ -2,7 +2,7 @@
 
 `myopc` is a standalone npm CLI that installs a Beads-oriented OpenCode workflow with one command.
 
-The package writes native OpenCode assets into `~/.config/opencode`, manages them through a local manifest, and exposes a focused daily workflow inside OpenCode:
+It writes native OpenCode assets into `~/.config/opencode` and gives you three core commands inside OpenCode:
 
 - `/beads-plan <request>`
 - `/beads-work [bead-id]`
@@ -11,27 +11,26 @@ The package writes native OpenCode assets into `~/.config/opencode`, manages the
 ## Requirements
 
 - OpenCode installed on the machine
-- `br` on `PATH` for planning and execution workflows
+- `br` on `PATH`
 - `bv` on `PATH` when graph-oriented status and prioritization are useful
 
 `br` is required. `bv` is optional.
 
-## What it installs
+## Quickstart
 
-- 3 OpenCode skills:
-  - `beads-plan`
-  - `beads-work`
-  - `beads-status`
-- 3 OpenCode commands with the same names
-- `.myopc-manifest.json` for install ownership, health checks, and uninstall safety
-
-Default target directory:
-
-```text
-~/.config/opencode
+```bash
+npx myopc
 ```
 
-Installed layout:
+Then open OpenCode and run:
+
+```text
+/beads-status
+/beads-plan Add health check endpoint
+/beads-work
+```
+
+## What gets installed
 
 ```text
 ~/.config/opencode/
@@ -48,123 +47,85 @@ Installed layout:
 
 ## CLI
 
-Default install:
+Install is the default command:
 
 ```bash
 npx myopc
-```
-
-Explicit install:
-
-```bash
 npx myopc install
 ```
 
-Non-interactive install:
+Common variations:
 
 ```bash
 npx myopc --yes
-```
-
-Install into a custom OpenCode config directory:
-
-```bash
-npx myopc --config-dir /tmp/opencode-test --yes
-```
-
-Overwrite conflicting files after backup:
-
-```bash
 npx myopc --force --yes
-```
-
-Health check:
-
-```bash
+npx myopc --config-dir /tmp/opencode-test --yes
 npx myopc doctor
-```
-
-Uninstall managed files:
-
-```bash
 npx myopc uninstall --yes
-```
-
-Help and version:
-
-```bash
 npx myopc --help
 npx myopc --version
 ```
 
-## Commands and options
+## Commands
 
-### Commands
+### `install`
 
-- `install`
-  - Installs the packaged skills and commands into the OpenCode config directory.
-  - This is the default command when no subcommand is provided.
-- `doctor`
-  - Checks `br`, checks `bv`, inspects the manifest, and reports the status of each managed asset.
-- `uninstall`
-  - Removes files owned by `myopc` and restores any backups created when unmanaged files were overwritten.
+Installs the packaged skills and commands into the OpenCode config directory.
 
-### Options
+### `doctor`
 
-- `--yes`, `-y`
-  - Runs without interactive prompts.
-  - Required for `uninstall` in non-interactive environments.
-- `--force`, `-f`
-  - Overwrites conflicting files after creating backups.
-  - Removes modified managed files during uninstall instead of skipping them.
-- `--config-dir <path>`
-  - Installs into or inspects a custom OpenCode config directory.
-- `--help`, `-h`
-  - Prints CLI usage.
-- `--version`, `-V`
-  - Prints the package version.
+Checks `br`, checks `bv`, inspects the manifest, and reports the status of each expected asset.
+
+### `uninstall`
+
+Removes files owned by `myopc` and restores backups created when unmanaged files were overwritten.
+
+## Options
+
+### `--yes`, `-y`
+
+Runs without prompts. Required for `uninstall` in non-interactive environments.
+
+### `--force`, `-f`
+
+Overwrites conflicting files after backup. During uninstall, removes modified managed files instead of skipping them.
+
+### `--config-dir <path>`
+
+Uses a custom OpenCode config directory instead of `~/.config/opencode`.
+
+### `--help`, `-h`
+
+Prints CLI usage.
+
+### `--version`, `-V`
+
+Prints the package version.
 
 ## OpenCode workflow
 
 ### `/beads-plan <request>`
 
-- Loads the `beads-plan` skill
-- Runs in `subtask: true` mode
-- Reads repository context automatically
-- Generates a dependency-aware plan
-- Creates beads with `br create`
-- Wires dependencies with `br dep add`
-- Syncs with `br sync --flush-only`
-- Reports the created bead IDs and the next ready work
+Runs in `subtask: true`, reads repository context automatically, creates a dependency-aware plan, converts it into beads with `br`, wires dependencies, syncs, and reports the ready work.
 
 ### `/beads-work [bead-id]`
 
-- Loads the `beads-work` skill
-- Runs in `subtask: true` mode
-- Targets a specific bead or auto-selects from `br ready`
-- Claims the bead with `br update --claim` when possible
-- Implements the requested scope
-- Runs relevant verification
-- Closes the bead with `br close --suggest-next --json` when the work is complete
-- Syncs with `br sync --flush-only`
+Runs in `subtask: true`, targets a specific bead or auto-selects from `br ready`, claims it when possible, implements the requested scope, verifies the result, closes the bead, and syncs.
 
 ### `/beads-status`
 
-- Loads the `beads-status` skill
-- Runs inline in the main OpenCode session
-- Summarizes `br stats`, `br ready`, in-progress work, and blocked work
-- Uses `bv` only when it is available
+Runs inline in the main OpenCode session and summarizes progress, ready work, in-progress work, and blocked work.
 
-## Install and ownership behavior
+## Ownership behavior
 
 - Missing target files are created.
 - Matching files are left untouched.
 - Previously managed files are updated in place.
-- Locally modified managed files are overwritten only with confirmation or `--force`.
+- Managed files with local edits are overwritten only with confirmation or `--force`.
 - Unmanaged conflicting files are overwritten only with confirmation or `--force`.
-- Overwritten unmanaged files receive timestamped `.myopc.bak-*` backups.
-- Overwritten managed files with local edits receive timestamped `.myopc.local-*` backups.
-- `.myopc-manifest.json` tracks the files currently owned by `myopc`.
+- Overwritten unmanaged files receive `.myopc.bak-*` backups.
+- Overwritten managed files with local edits receive `.myopc.local-*` backups.
+- `.myopc-manifest.json` tracks files owned by `myopc`.
 
 ## Scope
 
@@ -177,20 +138,18 @@ npx myopc --version
 
 ## Local development
 
-Run the CLI directly from the repo:
-
 ```bash
 node ./src/cli.js --help
 node ./src/cli.js install --config-dir /tmp/opencode-test --yes
 node ./src/cli.js doctor --config-dir /tmp/opencode-test
 node ./src/cli.js uninstall --config-dir /tmp/opencode-test --yes
-```
 
-Package checks:
-
-```bash
 npm run lint
 npm pack --dry-run
 ```
 
-See `docs/MYOPC_V1_SPEC.md` for the package contract and `docs/OPENCODE_BEADS_INTEGRATION.md` for the OpenCode-specific architecture.
+## Documentation
+
+- `docs/MYOPC_V1_SPEC.md`: package contract and CLI behavior
+- `docs/OPENCODE_BEADS_INTEGRATION.md`: OpenCode architecture and runtime mapping
+- `docs/PLAN_TO_BEADS_PROMPT.md`: planning prompt reference behind `beads-plan`
