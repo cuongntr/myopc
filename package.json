@@ -1,0 +1,29 @@
+{
+  "name": "myopc",
+  "version": "0.1.0",
+  "description": "Bootstrap OpenCode beads workflows with a single npx command",
+  "type": "module",
+  "bin": {
+    "myopc": "./src/cli.js"
+  },
+  "files": [
+    "src",
+    "assets",
+    "README.md",
+    "docs/MYOPC_V1_SPEC.md"
+  ],
+  "scripts": {
+    "doctor": "node ./src/cli.js doctor",
+    "lint": "node --check ./src/cli.js && node --check ./src/myopc.js",
+    "start": "node ./src/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "opencode",
+    "beads",
+    "cli"
+  ],
+  "license": "MIT"
+}
