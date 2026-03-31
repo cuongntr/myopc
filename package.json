@@ -1,6 +1,6 @@
 {
   "name": "myopc",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Bootstrap OpenCode beads workflows with a single npx command",
   "type": "module",
   "bin": {
